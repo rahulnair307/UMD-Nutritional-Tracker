@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Add any necessary styles or scripts -->
+    <style>
+      .image-container {
+          display: flex; /* Use flexbox to arrange images horizontally */
+          justify-content: space-between; /* Add space between images */
+      }
+
+      .image-container img {
+          width: 30%; /* Set the width for each image */
+          height: auto; /* Maintain the aspect ratio */
+          margin-right: 10px; /* Add margin between images */
+      }
+  </style>
+
+    <style>
+    h1{
+      font-weight: bold;
+      font-family: 'Times New Roman', Times, serif;
+      color:darkred;
+      text-align: center;
+    }
+    /**For all headings size 2**/
+    h2{
+      font-family:'Times New Roman', Times, serif;
+      color:darkred;
+      text-align: center;
+    }
+
+    /**For the food banner**/
+    #banner{
+      display: block;
+      width: 50%;
+      margin-left: auto;
+      margin-right: auto;
+      
+    }
+
+   /** For the Career Launch text**/
+    #Group{
+      text-align: center;
+    }
+
+   
+  </style>
+</head>
+<body>
+
+
+
+<h1>University Of Maryland Food Tracker</h1>
+<div class="image-container">
+  <img src="https://runinos.com/wp-content/uploads/2022/05/Screen-Shot-2022-05-05-at-9.06.36-PM.png" alt="Image 1">
+  <img src="https://cdn.winsightmedia.com/platform/files/public/2022-11/background/Blank%201800%20x%20945%20%2814%29.jpg?VersionId=IwANrhYsyWg60l9xsxAzWKVl5jLKSayT" alt="Image 2">
+  <img src="https://dining.umd.edu/sites/default/files/styles/optimized/public/2022-08/DiningServices_12012016_3062.JPG?itok=4PnrQoDz" alt="Image 3">
+</div>
+
+<h2>Food Search Bar</h2>
+
+
+
+
+
+<form id="foodForm">
+    <label for="food_name_input">Food</label>
+    <input type="text" id="food_name_input" name="food_name_input" required>
+    <label for="serving_size">Amount of Servings:</label>
+    <select id="serving_size" name="serving_size">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10</option>
+    </select>
+
+    <label for="dining_hall">Select Dining Hall:</label>
+    <select id="dining_hall" name="dining_hall">
+        <option value="South">South</option>
+        <option value="Y">The Y</option>
+        <option value="251">251 North</option>
+    </select>
+
+    <label for="date_input">Date:</label>
+    <input type="date" id="date_input" name="date_input" required>
+
+    <button type="button" onclick="getFoodInfo()">Get Food Info</button>
+    <button type="button" onclick="addToDailyTotal()">Add To Daily Total</button>
+    <button type="button" onclick="resetDailyTotals()">Reset Daily Totals</button>
+  
+
+</form>
+<p>Food Info Based On Your Search, Amount Of Servings, Dining Hall, and Date Below</p>
+<div id="resultContainer"></div>
+<div>
+  <h2>Daily Totals</h2>
+  <div id="dailyTotalCalories">Total Calories: 0</div>
+  <div id="dailyTotalCarbs">Total Carbohydrates: 0g</div>
+  <div id="dailyTotalFat">Total Fat: 0g</div>
+  <div id="dailyTotalProtein">Total Protein: 0g</div>
+  <div id="dailyTotalCholesterol">Total Cholesterol: 0mg</div>
+  <div id= "dailyTotalSodium">Total Sodium: 0mg</div>
+ 
+</div>
+
+
+
+    <!-- Display scraped data here -->
+</div>
+
+<h2>Daily Goals</h2>
+<p>
+  Input You're Goals To keep Yourself Accountable
+</p>
+
+<br>
+
+<label for = "calories_input">Calories</label>
+<input type="text" id = "calories_input" name = "calories_input" required> <br>
+
+<br>
+
+<label for = "protein_input">Proteins</label>
+<input type="text" id = "protein_input" name = "protein_input" required> <br>
+
+<br>
+
+<label for = "carbs_input">Total Carbs</label>
+<input type="text" id = "carbs_input" name = "carbs_input" required> <br>
+
+<br>
+
+<label for = "fats_input">Total Fats</label>
+<input type="text" id = "fats_input" name = "fats_input" required> <br>
+
+<br>
+
+<script>
+  let dailyTotalFat = 0;
+  let dailyTotalCarbs = 0;
+  let dailyTotalCholesterol = 0;
+  let dailyTotalProtein = 0;
+  let dailyTotalCalories=0;
+  let dailyTotalSodium=0;
+
+  function addToDailyTotal(){
+    const resultContainer = document.getElementById('resultContainer');
+    const data = JSON.parse(resultContainer.textContent);
+    if (data) {
+        const servingSize= parseFloat(data['Serving Size'])||1;
+        dailyTotalFat += (parseFloat(data['Total Fat']) || 0) * servingSize;
+        dailyTotalCarbs += (parseFloat(data['Total Carbohydrates']) || 0) * servingSize;
+        dailyTotalCholesterol += (parseFloat(data['Total Cholesterol']) || 0) * servingSize;
+        dailyTotalProtein += (parseFloat(data['Total Protein']) || 0) * servingSize;
+        dailyTotalSodium += (parseFloat(data['Total Sodium']) || 0) * servingSize;
+        dailyTotalCalories += parseFloat(data['Total Calories']) || 0*servingSize;
+        
+
+
+        document.getElementById('dailyTotalCalories').textContent = `Total Calories: ${dailyTotalCalories.toFixed(2)}`;
+        document.getElementById('dailyTotalCarbs').textContent = `Total Carbohydrates: ${dailyTotalCarbs.toFixed(2)}g`;
+        document.getElementById('dailyTotalFat').textContent = `Total Fat: ${dailyTotalFat.toFixed(2)}g`;
+        document.getElementById('dailyTotalProtein').textContent = `Total Protein: ${dailyTotalProtein.toFixed(2)}g`;
+        document.getElementById('dailyTotalCholesterol').textContent = `Total Cholesterol: ${dailyTotalCholesterol.toFixed(2)}mg`;
+        document.getElementById('dailyTotalSodium').textContent = `Total Sodium: ${dailyTotalSodium.toFixed(2)}mg`;
+        const dailyGoals = {
+          calories: parseInt(document.getElementById('calories_input').value) || 0,
+          protein: parseInt(document.getElementById('protein_input').value) || 0,
+          carbs: parseInt(document.getElementById('carbs_input').value) || 0,
+          fats: parseInt(document.getElementById('fats_input').value) || 0,
+        };
+
+        if (
+          dailyTotalCalories <= dailyGoals.calories+100 &&
+          dailyTotalProtein <= dailyGoals.protein+10 &&
+          dailyTotalCarbs <= dailyGoals.carbs+10 &&
+          dailyTotalFat <= dailyGoals.fats+10&&
+          dailyTotalCalories >= dailyGoals.calories &&
+          dailyTotalProtein >= dailyGoals.protein &&
+          dailyTotalCarbs >= dailyGoals.carbs &&
+          dailyTotalFat >= dailyGoals.fats
+          
+      ) {
+        const congratulationMessage = document.createElement('div');
+        congratulationMessage.innerHTML = '<h2>Congratulations! You achieved your nutrition goal!</h2>';
+        congratulationMessage.style.position = 'fixed';
+        congratulationMessage.style.top = '50%';
+        congratulationMessage.style.left = '50%';
+        congratulationMessage.style.transform = 'translate(-50%, -50%)';
+        congratulationMessage.style.backgroundColor = 'white';
+        congratulationMessage.style.padding = '20px';
+        congratulationMessage.style.borderRadius = '10px';
+        congratulationMessage.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        congratulationMessage.style.zIndex = '9999';
+        document.body.appendChild(congratulationMessage);
+
+        confetti({
+          particleCount: 300,  
+          spread: 500,        
+          origin: { y: 0.6 }
+        });
+        setTimeout(() => {
+        congratulationMessage.remove();
+      }, 3000);
+      }
+      
+        
+        
+        resultContainer.innerHTML= ''
+    } else {
+        alert('Please get food info first.');
+    }
+
+
+  }
+
+    function getFoodInfo() {
+        // Get form data
+        const formData = new FormData(document.getElementById('foodForm'));
+        formData.set('dining_hall', mapDiningHallToNumber(document.getElementById('dining_hall').value));
+        // Make asynchronous request to Flask server
+        fetch('/food_search', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update result container with scraped data
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.innerHTML = JSON.stringify(data, null, 2);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    function mapDiningHallToNumber(diningHallName) {
+    const mapping = {
+        'South': 16,
+        'Y': 19,  
+        '251': 51,
+        
+    };
+    return mapping[diningHallName];
+}
+function resetDailyTotals() {
+    dailyTotalFat = 0;
+    dailyTotalCarbs = 0;
+    dailyTotalCholesterol = 0;
+    dailyTotalProtein = 0;
+    dailyTotalCalories=0;
+    dailyTotalSodium=0
+
+    // Update the daily total elements
+    document.getElementById('dailyTotalFat').textContent = `Total Fat: 0g`;
+    document.getElementById('dailyTotalCarbs').textContent = `Total Carbohydrates: 0g`;
+    document.getElementById('dailyTotalCholesterol').textContent = `Total Cholesterol: 0mg`;
+    document.getElementById('dailyTotalProtein').textContent = `Total Protein: 0g`;
+    document.getElementById('dailyTotalCalories').textContent = `Total Calories: 0g`;
+    document.getElementById('dailyTotalSodium').textContent = `Total Sodium: 0g`;
+    
+
+
+}
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.1.0"></script>
+
+<h2>
+  Development Team
+</h2>
+
+<div>
+  {% for student in students %}
+    <div>
+      <h3 style = "color: rgb(120, 120, 120); margin-bottom: 4px;">
+        {{student["name"]}}</h3>
+      <div><b>Team: </b>{{student["team"]}}</div>
+    </div>
+  {% endfor %}
+  </div>
+
+</body>
+</html> 
